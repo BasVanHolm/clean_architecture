@@ -1,0 +1,14 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+dependencies {
+    compile("org.springframework:spring-web")
+    testCompile("junit:junit")
+}
