@@ -1,0 +1,6 @@
+dependencies {
+    implementation (group: "org.slf4j", name :"slf4j-api")
+    implementation(group: "org.apache.commons", name: "commons-lang3")
+    testImplementation (group : "org.springframework.boot", name: "spring-boot-starter-test")
+
+}

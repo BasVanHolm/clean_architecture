@@ -2,36 +2,62 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
     }
 }
 
 plugins {
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id 'java'
 }
 
 group 'com.sevano.it'
 version '1.0-SNAPSHOT'
 
+apply plugin: 'idea'
 
-subprojects {
+allprojects {
+    ext.springBootVersion = "2.6.0"
+    ext.kotlinVersion = "1.6.0"
+    group 'com.sevano.it'
+    version '1.0-SNAPSHOT'
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
     }
 }
 
-dependencies {
- //   testCompile group: 'junit', name: 'junit', version: '4.12'
+subprojects {
+    compileJava.options.encoding = "UTF-8"
+    compileTestJava.options.encoding = "UTF-8"
+    idea {
+        module {
+            inheritOutputDirs = true
+        }
+    }
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
-configure(allprojects - project(":application")) {
-    apply plugin: "java"
-    apply plugin: 'eclipse'
-    apply plugin: 'idea'
-    sourceCompatibility = JavaVersion.VERSION_1_8
+configure(subprojects.findAll {it.name != 'platform'}) {
+    apply plugin: "java-library"
+
+    dependencies {
+        implementation platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
+        implementation platform(project(":platform"))
+        annotationProcessor platform(project(":platform"))
+
+        implementation 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+    }
+
+    test {
+        testLogging {
+            showStandardStreams = true
+        }
+        useJUnitPlatform {}
+    }
+}
+idea {
+    module {
+        inheritOutputDirs = true
+    }
 }

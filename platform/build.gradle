@@ -1,0 +1,16 @@
+ext {
+    versions = []
+}
+
+apply plugin: 'java-platform'
+
+javaPlatform {
+    // Declare that your platform contains dependencies
+    allowDependencies()
+}
+dependencies {
+    api platform("org.springframework.boot:spring-boot-dependencies:2.6.1")
+
+    api platform (group: "org.projectlombok", name: "lombok", version: "1.18.12")
+}
+

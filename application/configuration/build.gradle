@@ -1,16 +1,44 @@
 buildscript {
-    repositories {
-        mavenCentral()
-    }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.6.1")
     }
 }
 
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
+plugins {
+    id 'org.springframework.boot' version "$springBootVersion"
+    id 'java'
+}
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-    testCompile("junit:junit")
+    implementation platform("org.springframework.boot:spring-boot-dependencies")
+
+    implementation project(":application:core")
+
+    implementation(group: "org.springframework.boot", name: "spring-boot-starter-web")
+    implementation(group: "org.springframework.boot", name: "spring-boot-starter-aop")
+
+    api 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    api(group: "javax.servlet", name: "javax.servlet-api")
+
+    testImplementation project(":application:configuration")
+    testImplementation(group: "org.springframework.boot", name: "spring-boot-starter-test")
 }
+
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName = 'com.sevano.it.Application.Application'
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.sevano.it.Application.Application'
+    }
+}
+
+tasks.register('copyBootJar', Copy) {
+    from "${project.rootDir}/application/configuration/build/libs"
+    include "*.jar"
+    into "${project.rootDir}/build/libs"
+}
+
+bootJar.finalizedBy(copyBootJar)
